@@ -1,0 +1,30 @@
+{
+    "name": "usuario/examen-tienda",
+    "description": "Examen Repaso",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Usuario\\ExamenTienda\\": "src/",
+            "Controllers\\": "./src/Controllers/",
+            "Lib\\": "./src/Lib/",
+            "Models\\": "./src/Models/",
+            "Views\\": "./src/Views/",
+            "Config\\": "./src/Config/",
+            "Routes\\": "./src/Routes/",
+            "Repositories\\": "./src/Repositories/",
+            "Services\\": "./src/Services/",
+            "Utils\\": "./src/Utils/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pablolopezlo15",
+            "email": "plopezlozano12@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "vlucas/phpdotenv": "^5.6",
+        "composer/composer": "^2.6"
+    }
+}
