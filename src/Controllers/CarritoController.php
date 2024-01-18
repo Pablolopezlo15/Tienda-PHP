@@ -26,7 +26,7 @@ class CarritoController {
             $_SESSION['carrito'][$productoId] = $producto;
             $_SESSION['carrito'][$productoId]['cantidad'] = 1;
         }
-        header('Location: /Tienda-PHP/carrito/obtenerCarrito/');
+        header('Location: '.BASE_URL.'carrito/obtenerCarrito/');        
     }
 
     public function eliminarProducto($id) {
@@ -34,7 +34,7 @@ class CarritoController {
         if (isset($_SESSION['carrito'][$productoId])) {
             unset($_SESSION['carrito'][$productoId]);
         }
-        header('Location: /Tienda-PHP/carrito/obtenerCarrito/');
+        header('Location: '.BASE_URL.'carrito/obtenerCarrito/');        
     }
 
     public function obtenerCarrito() {
@@ -42,8 +42,8 @@ class CarritoController {
             $_SESSION['carrito'] = [];
         }
         $productos = $_SESSION['carrito'];
-    
-        $this->pages->render('carrito/ver', ['productos' => $productos]);
+        $total = $this->obtenerTotalCarrito();
+        $this->pages->render('carrito/ver', ['productos' => $productos, 'total' => $total]);
     }
 
     public function vaciarCarrito() {
@@ -55,7 +55,7 @@ class CarritoController {
         if (isset($_SESSION['carrito'][$productoId])) {
             $_SESSION['carrito'][$productoId]['cantidad']++;
         }
-        header('Location: /Tienda-PHP/carrito/obtenerCarrito/');
+        header('Location: '.BASE_URL.'carrito/obtenerCarrito/');        
     }
 
     public function disminuirCantidad($id) {
@@ -66,9 +66,18 @@ class CarritoController {
                 unset($_SESSION['carrito'][$productoId]);
             }
         }
-        header('Location: /Tienda-PHP/carrito/obtenerCarrito/');
+        header('Location: '.BASE_URL.'carrito/obtenerCarrito/');        
 
     }
 
+    public function obtenerTotalCarrito() {
+        $total = 0;
+        if (isset($_SESSION['carrito'])) {
+            foreach ($_SESSION['carrito'] as $producto) {
+                $total += $producto['precio'] * $producto['cantidad'];
+            }
+        }
+        return $total;
+    }
 
 }

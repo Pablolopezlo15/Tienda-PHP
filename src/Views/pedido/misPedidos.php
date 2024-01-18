@@ -1,7 +1,6 @@
 <section>
     <h1>Mis Pedidos</h1>
     <?php if (isset($_SESSION['login']) && $pedidos >= 1): ?>
-        <strong class="alert_green">Pedido realizado correctamente</strong>
     <table>
         <tr>
             <th>Id</th>

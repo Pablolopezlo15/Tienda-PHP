@@ -25,8 +25,8 @@ class PedidoService {
         return $this->pedidoRepository->save($usuarioId, $provincia, $localidad, $direccion, $coste, $estado, $fecha, $hora, $carrito);
     }
 
-    public function getLineasPedido($pedidoId) {
-        return $this->pedidoRepository->getLineasPedido($pedidoId);
+    public function getProductosPedido($pedidoId) {
+        return $this->pedidoRepository->getProductosPedido($pedidoId);
     }
 
     // public function saveLinea($pedidoId, $productoId, $unidades) {
@@ -37,8 +37,17 @@ class PedidoService {
         return $this->pedidoRepository->calcularTotal($carrito);
     }
 
-    public function confirmarPedido($id) {
-        return $this->pedidoRepository->confirmarPedido($id);
+    public function getCantidadProducto($pedidoId, $productoId) {
+        return $this->pedidoRepository->getCantidadProducto($pedidoId, $productoId);
     }
+
+    public function confirmarPedido($pedidoId) {
+        $pedidoRepository = new PedidoRepository();
+        return $pedidoRepository->confirmarPedido($pedidoId);
+    }
+
+    // public function confirmarPedido($id) {
+    //     return $this->pedidoRepository->confirmarPedido($id);
+    // }
 
 }

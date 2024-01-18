@@ -2,6 +2,7 @@
 namespace Lib;
 use PDO;
 use PDOException;
+use Exception;
 
 class BaseDatos{
     private $conexion;

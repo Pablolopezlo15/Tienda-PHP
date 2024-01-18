@@ -808,7 +808,10 @@ form {
  }
  
  input[type="submit"]:hover {
-   background-color: darken(var(--colorBoton), 10%);
+   transition: 1s;
+   background-color: white;
+   color: red;
+   border: 1px solid red;
  }
  
  /* Estilos para mensajes de éxito o error */
@@ -820,13 +823,54 @@ form {
    font-size: var(--font-size-pequeño);
  }
  
- strong.success {
-   background-color: #4caf50;
-   color: white;
+.exito {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   color: green;
  }
  
- strong.error {
-   background-color: #f44336;
-   color: white;
+.errores {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   color: red;
  }
  
+ .errores p{
+   text-align: center;
+   color: red;
+ }
+
+ .boton-auxiliares{
+   display: flex;
+   width: 150px;
+   justify-content: center;
+   align-items: center;
+   gap: 10px;
+   margin-top: 10px;
+   border: #000000 1px solid;
+   border-radius: 5px;
+   background-color: #e74c3c;
+   color: white;
+ }
+
+   .boton-auxiliares a{
+      text-decoration: none;
+      color: white;
+      font-size: var(--font-size-pequeño);
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+   }
+
+   .boton-auxiliares:hover{
+      background-color: white;
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+   }
+   
+   .boton-auxiliares:hover a{
+      color: #e74c3c;
+   }

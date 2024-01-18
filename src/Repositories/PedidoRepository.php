@@ -42,16 +42,37 @@ class PedidoRepository {
     }
 
 
-    public function getLineasPedido($pedidoId) {
-        $sql = "SELECT * FROM lineas_pedidos WHERE pedido_id = :pedidoId";
+    public function getByCategoria($categoriaId) {
+        $sql = "SELECT * FROM productos WHERE categoria_id = :categoriaId";
         $stmt = $this->db->prepara($sql);
-        
+        $stmt->bindParam(':categoriaId', $categoriaId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->db->close();
+        return $result;
+    }
+
+    public function getProductosPedido($pedidoId) {
+        $sql = "SELECT p.* FROM productos p
+                INNER JOIN lineas_pedidos lp ON p.id = lp.producto_id
+                WHERE lp.pedido_id = :pedidoId";
+        $stmt = $this->db->prepara($sql);
         $stmt->bindParam(':pedidoId', $pedidoId, PDO::PARAM_INT);
         $stmt->execute();
-        $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+        $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->db->close();
-        return $lineas;
+        return $productos;
+    }
+
+    public function getCantidadProducto($pedidoId, $productoId) {
+        $sql = "SELECT cantidad FROM lineas_pedidos WHERE pedido_id = :pedidoId AND producto_id = :productoId";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':pedidoId', $pedidoId, PDO::PARAM_INT);
+        $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->db->close();
+        return $result ? $result['cantidad'] : 0;
     }
 
     // public function saveLinea($pedidoId, $productoId, $unidades) {
@@ -126,11 +147,6 @@ class PedidoRepository {
             // Commit si todas las operaciones fueron exitosas
             $this->db->ejecutarTransaccion();
 
-            // Paso 3: Mandar correo de confirmación al cliente
-            // $this->enviarCorreoConfirmacion($clienteId);
-
-            // Paso 4: Vaciar el carrito (aquí debes implementar la lógica correspondiente)
-
             // Puedes devolver el ID del pedido creado o cualquier otro dato que necesites
             return $pedidoId;
         } catch (PDOException $e) {
@@ -152,5 +168,6 @@ class PedidoRepository {
             echo $e->getMessage();
         }
     }
+    
 
 }

@@ -9,25 +9,25 @@
 <body>
     <h1>¡Su pedido ha sido confirmado!</h1>
     <p>Estimado(a) <?php echo htmlspecialchars($nombre); ?>,</p>
-    <p>Le informamos que su pedido está ya disponible para su recogida.</p>
+    <p>Le informamos que su pedido está ya reparto. Llegará en un plazo de 2 días laborales</p>
     <p>Detalles del pedido:</p>
     <ul>
         <li>ID del pedido: <?php echo htmlspecialchars($idPedido); ?></li>
         <li><table>
             <tr>
                 <th>Producto</th>
-                <th>Unidades</th>
+                <!-- <th>Unidades</th> -->
                 <th>Precio</th>
             </tr>
             <?php foreach ($productos as $producto): ?>
             <tr>
                 <td><?= $producto['nombre'] ?></td>
-                <td><?= $producto['unidades'] ?></td>
+                <!-- <td><?= $producto['cantidad'] ?></td>                 -->
                 <td><?= $producto['precio'] ?>€</td>
             </tr>
             <?php endforeach; ?>
         </table></li>
-        <li>Fecha del pedido: <?php echo htmlspecialchars($fecha) . htmlspecialchars($hora);  ?></li>
+        <li>Fecha del pedido: <?php echo htmlspecialchars($fecha) ." ". htmlspecialchars($hora);  ?></li>
     </ul>
     <p>Saludos cordiales, <?=$nombre?></p>
     <p>Tienda de Pablo López Lozano</p>

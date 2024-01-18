@@ -35,8 +35,8 @@
                         <?php else:?>
                             <p><?=$_SESSION['login']->nombre?> <?=$_SESSION['login']->apellidos?></p>
                             <a href="<?=BASE_URL?>usuario/logout/">Cerrar Sesión</a>
+                            <a href="<?=BASE_URL?>pedido/misPedidos/">Mis Pedidos</a>
                         <?php endif;?>
-                        <a href="<?=BASE_URL?>pedido/misPedidos/">Mis Pedidos</a>
                         <a href="<?=BASE_URL?>carrito/obtenerCarrito/">
                             <i class="ri-shopping-cart-2-fill"></i>
                             <?= isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0 ?>

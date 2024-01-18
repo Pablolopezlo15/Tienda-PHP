@@ -28,8 +28,8 @@ class PedidoController {
     public function mostrarPedido(){
         if(isset($_SESSION['login']) && count($_SESSION['carrito']) >= 1){
             $this->pages->render('pedido/crear');
-        } else {
-            var_dump('No estás logueado o no tienes productos en el carrito');
+        } elseif (isset($_SESSION['login']) && count($_SESSION['carrito']) == 0) {
+            $this->pages->render('carrito/ver' , ['errores' => 'No hay productos en el carrito']);
         }
     }
 
@@ -88,23 +88,9 @@ class PedidoController {
             $this->pedidoService->confirmarPedido($id);
             $this->enviarEmail($id);
         }
-        //Redirigir a la página de mis pedidos
-        header('Location: ' . BASE_URL . 'pedido/misPedidos');
-        
+
     }
 
-    public function getProductos($idPedido) {
-        $lineasPedido = $this->pedidoService->getLineasPedido($idPedido);
-        $productos = [];
-    
-        foreach ($lineasPedido as $linea) {
-            $productoId = $linea['producto_id']; 
-            $producto = $this->productoService->getById($productoId);
-            $productos[] = $producto;
-        }
-    
-        return $productos;
-    }
 
         /**
      * Envia un correo electrónico al cliente.
@@ -162,7 +148,7 @@ class PedidoController {
         //Note that with gmail you can only use your account address (same as `Username`)
         //or predefined aliases that you have configured within your account.
         //Do not use user-submitted addresses in here
-        $mail->setFrom('farmaciaphppablo@gmail.com', 'Farmacia de Pablo López Lozano');
+        $mail->setFrom('farmaciaphppablo@gmail.com', 'Tienda de Pablo López Lozano');
     
         //Set an alternative reply-to address
         //This is a good place to put user-submitted addresses
@@ -183,7 +169,8 @@ class PedidoController {
         // Define the variables
         $nombre = $_SESSION['login']->nombre;
         $idPedido = $id;
-        $productos = $this->getProductos($idPedido);
+        // $productos = $this->pedidoService->getProductosPedido($id);
+        $productos = $this->pedidoService->getProductosPedido($id);
         $fecha = Utils::getFecha();
         $hora = Utils::getHora();
         // Include the file and store the output in a variable
@@ -204,9 +191,10 @@ class PedidoController {
     
         //send the message, check for errors
         if (!$mail->send()) {
-            echo 'Mailer Error: ' . $mail->ErrorInfo;
+            // echo 'Mailer Error: ' . $mail->ErrorInfo;
         } else {
-            $this->pages->render('pedido/misPedidos');
+            // header('Location: ' . BASE_URL . 'pedido/misPedidos');
+            echo '<h1><a href="/Tienda-PHP">Volver</a></h1>';
             echo 'Message sent!';
             //Section 2: IMAP
             //Uncomment these to save your message in the 'Sent Mail' folder.
@@ -233,9 +221,7 @@ class PedidoController {
     
             return $result;
         }
-    
-        header('Location: ' . BASE_URL . 'pedido/misPedidos');
-    
+        
         }
 
 

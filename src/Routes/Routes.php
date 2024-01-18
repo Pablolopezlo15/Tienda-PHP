@@ -112,6 +112,18 @@ class Routes {
             return (new UsuarioController())->logout();
         });
 
+        Router::add('GET', '/usuario/eliminar/?id=:id', function($id) {
+            return (new UsuarioController())->eliminar($id);
+        });
+
+        Router::add('GET', '/usuario/editar/?id=:id', function($id) {
+            return (new UsuarioController())->editar($id);
+        });
+
+        Router::add('POST', '/usuario/actualizar', function() {
+            return (new UsuarioController())->actualizar();
+        });
+
         Router::add('GET', '/error', function() {
             return (new ErrorController())->error404();
         });

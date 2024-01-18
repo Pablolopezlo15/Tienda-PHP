@@ -104,4 +104,55 @@ class UsuarioRepository {
         return $result;
     }
 
+    public function getById($id){
+        $sql = "SELECT * FROM usuarios WHERE id = :id";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->db->close();
+        return $usuario;
+    }
+
+    public function update($usuario){
+        $id = $usuario->getId();
+        $nombre = $usuario->getNombre();
+        $apellidos = $usuario->getApellidos();
+        $email = $usuario->getEmail();
+        $rol = $usuario->getRol();
+
+        // var_dump($id, $nombre, $apellidos, $email, $rol);
+        // die();
+        try {
+            $ins = $this->db->prepara("UPDATE usuarios SET nombre=:nombre, apellidos=:apellidos, email=:email, rol=:rol WHERE id=:id");
+
+            $ins->bindValue(':id', $id);
+            $ins->bindValue(':nombre', $nombre);
+            $ins->bindValue(':apellidos', $apellidos);
+            $ins->bindValue(':email', $email);
+            $ins->bindValue(':rol', $rol);
+
+            $ins->execute();
+
+            $result = true;
+        } catch (PDOException $error){
+            $result = false;
+        }
+
+        $ins->closeCursor();
+        $ins=null;
+
+        return $result;
+    }
+
+    public function delete($id){
+        $sql = "DELETE FROM usuarios WHERE id = :id";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->db->close();
+        return $usuario;
+    }
+
 }

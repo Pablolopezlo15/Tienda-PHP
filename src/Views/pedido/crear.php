@@ -1,5 +1,6 @@
 <section>
-    <h1>Introduce tus datos para realizar el pedido</h1>
+    <h1>Detalles del pedido</h1>
+    <h3 style="text-align: center">Introduce tus datos para realizar el pedido</h3>
     <form action="<?=BASE_URL?>pedido/crear" method="POST">
         <label for="provincia">Provincia</label>
         <input type="text" name="provincia" required>
