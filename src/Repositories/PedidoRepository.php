@@ -1,14 +1,17 @@
 <?php
 namespace Repositories;
 use Lib\BaseDatos;
+use Lib\Pages;
 use PDO;
+use PDOException;
 
 class PedidoRepository {
     private BaseDatos $db;
-    
+    private Pages $pages;
 
     public function __construct() {
         $this->db = new BaseDatos();
+        $this->pages = new Pages();
     }
 
     public function getAll() {
@@ -28,19 +31,42 @@ class PedidoRepository {
         return $pedido;
     }
 
-    public function saveLinea($pedidoId, $productoId, $unidades) {
-        $sql = "INSERT INTO lineas_pedidos (pedido_id, producto_id, unidades) 
-                VALUES (:pedidoId, :productoId, :unidades)";
-    
+    public function getByUsuario($usuarioId) {
+        $sql = "SELECT * FROM pedidos WHERE usuario_id = :usuarioId ORDER BY id DESC";
         $stmt = $this->db->prepara($sql);
-        $stmt->bindParam(':pedidoId', $pedidoId, PDO::PARAM_INT);
-        $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
-        $stmt->bindParam(':unidades', $unidades, PDO::PARAM_INT);
-    
-        $save = $stmt->execute();
+        $stmt->bindParam(':usuarioId', $usuarioId, PDO::PARAM_INT);
+        $stmt->execute();
+        $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->db->close();
-        return $save;
+        return $pedidos;
     }
+
+
+    public function getLineasPedido($pedidoId) {
+        $sql = "SELECT * FROM lineas_pedidos WHERE pedido_id = :pedidoId";
+        $stmt = $this->db->prepara($sql);
+        
+        $stmt->bindParam(':pedidoId', $pedidoId, PDO::PARAM_INT);
+        $stmt->execute();
+        $lineas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $this->db->close();
+        return $lineas;
+    }
+
+    // public function saveLinea($pedidoId, $productoId, $unidades) {
+    //     $sql = "INSERT INTO lineas_pedidos (pedido_id, producto_id, unidades) 
+    //             VALUES (:pedidoId, :productoId, :unidades)";
+    
+    //     $stmt = $this->db->prepara($sql);
+    //     $stmt->bindParam(':pedidoId', $pedidoId, PDO::PARAM_INT);
+    //     $stmt->bindParam(':productoId', $productoId, PDO::PARAM_INT);
+    //     $stmt->bindParam(':unidades', $unidades, PDO::PARAM_INT);
+    
+    //     $save = $stmt->execute();
+    //     $this->db->close();
+    //     return $save;
+    // }
 
     public function calcularTotal($carrito) {
         $total = 0;
@@ -114,5 +140,17 @@ class PedidoRepository {
         }
     }
 
+    public function confirmarPedido($idPedido){
+        $estado = 'confirmado';
+        try {
+            $stmt = $this->db->prepara("UPDATE pedidos SET estado = :estado WHERE id = :id");
+            $stmt->bindParam(':estado', $estado);
+            $stmt->bindParam(':id', $idPedido);
+            $stmt->execute();
+            $this->db->close();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 
 }

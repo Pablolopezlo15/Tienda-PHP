@@ -20,7 +20,6 @@
             <div class="navbar">
                 <div class="nav-container">
                     <div>
-                        
                     </div>
                     <input class="checkbox" type="checkbox" name="" id="checkbox" />
                     <div class="hamburger-lines">
@@ -37,15 +36,19 @@
                             <p><?=$_SESSION['login']->nombre?> <?=$_SESSION['login']->apellidos?></p>
                             <a href="<?=BASE_URL?>usuario/logout/">Cerrar Sesión</a>
                         <?php endif;?>
+                        <a href="<?=BASE_URL?>pedido/misPedidos/">Mis Pedidos</a>
                         <a href="<?=BASE_URL?>carrito/obtenerCarrito/">
                             <i class="ri-shopping-cart-2-fill"></i>
                             <?= isset($_SESSION['carrito']) ? count($_SESSION['carrito']) : 0 ?>
-                        </a>                        
-                        <?php if (isset($_SESSION['login']) AND $_SESSION['login']->rol=='admin'):?>
-                            <a href="<?=BASE_URL?>categoria/crear/">Crear Categoria</a>
-                            <a href="<?=BASE_URL?>producto/crear/">Nuevo Producto</a>
-                            
-                            <a href="<?=BASE_URL?>pedido/verTodos/">Gestionar Pedidos</a>
+                        </a>    
+                        <?php if (isset($_SESSION['login']) && is_object($_SESSION['login'])):?>
+                            <?php if ($_SESSION['login']->rol == 'admin'):?>
+                                <a href="<?=BASE_URL?>usuario/verTodos/">Gestionar Usuarios</a>
+                                <a href="<?=BASE_URL?>categoria/verTodos/">Gestionar Categorias</a>
+                                <a href="<?=BASE_URL?>categoria/crear/">Crear Categoria</a>
+                                <a href="<?=BASE_URL?>producto/crear/">Nuevo Producto</a>
+                                <a href="<?=BASE_URL?>pedido/verTodos/">Gestionar Pedidos</a>
+                            <?php endif;?>
                         <?php endif;?>
                     </div>
                     <div class="logo">

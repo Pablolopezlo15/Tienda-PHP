@@ -13,6 +13,10 @@ class UsuarioService {
         return $this->usuarioRepository->create($usuario);
     }
 
+    public function verTodos() {
+        return $this->usuarioRepository->verTodos();
+    }
+
     public function login($usuario) {
         return $this->usuarioRepository->login($usuario);
     }

@@ -45,6 +45,11 @@ class UsuarioController {
         $this->pages->render('/usuario/registro');
     }
 
+    public function verTodos(){
+        $usuarios = $this->usuarioService->verTodos();
+        $this->pages->render('/usuario/verTodos', ['usuarios' => $usuarios]);
+    }
+
     public function login(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){

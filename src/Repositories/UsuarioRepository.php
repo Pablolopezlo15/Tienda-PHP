@@ -2,6 +2,7 @@
 namespace Repositories;
 use Lib\BaseDatos;
 use PDO;
+use PDOException;
 
 
 class UsuarioRepository {
@@ -18,14 +19,11 @@ class UsuarioRepository {
         $apellidos = $usuario->getApellidos();
         $email = $usuario->getEmail();
         $password = $usuario->getPassword();
-        $rol = 'user';
-
-        // $id = NULL;
-        // $nombre=$this->getNombre();
-        // $apellidos=$this->getApellidos();
-        // $email = $this->getEmail();
-        // $password = $this->getPassword();
-        // $rol = 'user';
+        if ($usuario->getRol() == 'admin'){
+            $rol = 'admin';
+        } else{
+            $rol = 'user';
+        }
 
         try {
             $ins = $this->db->prepara("INSERT INTO usuarios (id, nombre, apellidos, email, password, rol) values (:id, :nombre, :apellidos, :email, :password, :rol)");
@@ -50,6 +48,14 @@ class UsuarioRepository {
         return $result;
     }
 
+
+    public function verTodos(){
+        $sql = "SELECT * FROM usuarios";
+        $this->db->consulta($sql);
+        $this->db->close();
+        return $this->db->extraer_todos();
+    }
+
     public function login($usuario){
         $email = $usuario->getEmail();
         $password = $usuario->getPassword();
@@ -57,7 +63,7 @@ class UsuarioRepository {
         try {
             $datosUsuario = $this->buscaMail($email);
 
-            if ($datosUsuario !== false){
+            if ($datosUsuario !== false && $datosUsuario !== null){
                 $verify = password_verify($password, $datosUsuario->password);
 
                 if ($verify){
@@ -82,7 +88,15 @@ class UsuarioRepository {
         try {
             $select->execute();
             if ($select && $select->rowCount() == 1){
-                $result = $select->fetch(PDO::FETCH_OBJ);
+                $usuario = $select->fetch(PDO::FETCH_OBJ);
+
+                if ($usuario !== false) {
+                    $result = $usuario;
+                } else {
+                    $result = null;
+                }
+            } else {
+                $result = null;
             }
         } catch (PDOException $err){
             $result = false;

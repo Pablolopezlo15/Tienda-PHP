@@ -17,16 +17,28 @@ class PedidoService {
         return $this->pedidoRepository->getById($id);
     }
 
+    public function getByUsuario($usuarioId) {
+        return $this->pedidoRepository->getByUsuario($usuarioId);
+    }
+
     public function save($usuarioId, $provincia, $localidad, $direccion, $coste, $estado, $fecha, $hora, $carrito) {
         return $this->pedidoRepository->save($usuarioId, $provincia, $localidad, $direccion, $coste, $estado, $fecha, $hora, $carrito);
     }
 
-    public function saveLinea($pedidoId, $productoId, $unidades) {
-        return $this->pedidoRepository->saveLinea($pedidoId, $productoId, $unidades);
+    public function getLineasPedido($pedidoId) {
+        return $this->pedidoRepository->getLineasPedido($pedidoId);
     }
+
+    // public function saveLinea($pedidoId, $productoId, $unidades) {
+    //     return $this->pedidoRepository->saveLinea($pedidoId, $productoId, $unidades);
+    // }
 
     public function getTotalCarrito($carrito) {
         return $this->pedidoRepository->calcularTotal($carrito);
+    }
+
+    public function confirmarPedido($id) {
+        return $this->pedidoRepository->confirmarPedido($id);
     }
 
 }

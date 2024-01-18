@@ -30,7 +30,7 @@ class BaseDatos{
 
             $conexion = new PDO("mysql:host={$this->servidor};dbname={$this->base_datos}", $this->usuario, $this->pass, $opciones);
             return $conexion;
-        } catch(\PDOException $e){
+        } catch(PDOException $e){
             echo "Ha surgido un error y no se puede conectar a la base de datos. Detalle: " . $e->getMessage();
             exit;
         }

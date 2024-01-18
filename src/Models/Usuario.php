@@ -11,7 +11,7 @@ class Usuario
 {
     private string|null $id;
     private string $nombre;
-    private string $apeliidos;
+    private string $apellidos;
     private string $email;
     private string $password;
     private string $rol;
@@ -66,7 +66,7 @@ class Usuario
 
     public function setApellidos(string $apellidos): void
     {
-        $this->apeliidos = $apellidos;
+        $this->apellidos = $apellidos;
     }
 
     public function getEmail(): string

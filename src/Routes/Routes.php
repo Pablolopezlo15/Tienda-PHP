@@ -44,6 +44,10 @@ class Routes {
             return (new ProductoController())->editar($id);
         });
 
+        Router::add('POST', '/producto/editar', function() {
+            return (new ProductoController())->editar();
+        });
+
         Router::add('GET', '/carrito/agregarProducto/?id=:id', function($id) {
             return (new CarritoController())->agregarProducto($id);
         });
@@ -72,8 +76,16 @@ class Routes {
             return (new PedidoController())->mostrarPedido();
         }); 
 
+        Router::add('GET', '/pedido/misPedidos', function() {
+            return (new PedidoController())->misPedidos();
+        });
+
         Router::add('POST', '/pedido/crear', function() {
             return (new PedidoController())->crear();
+        });
+
+        Router::add('GET', '/pedido/confirmarPedido/?id=:id', function($id) {
+            return (new PedidoController())->confirmarPedido($id);
         });
 
         Router::add('GET', '/usuario/login', function() {
@@ -92,6 +104,9 @@ class Routes {
             return (new UsuarioController())->registro();
         });
 
+        Router::add('GET', '/usuario/verTodos', function() {
+            return (new UsuarioController())->verTodos();
+        });
 
         Router::add('GET', '/usuario/logout', function() {
             return (new UsuarioController())->logout();
