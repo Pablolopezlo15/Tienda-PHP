@@ -1,6 +1,12 @@
 <section>
     <h1>Mis Pedidos</h1>
-    
+    <?php if(!empty($errores)) : ?>
+        <div class="errores">
+            <?php foreach ($errores as $error): ?>
+                <p><?php echo $error; ?></p>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
     <table>
         <tr>
             <th>Id</th>

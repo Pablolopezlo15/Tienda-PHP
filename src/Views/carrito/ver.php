@@ -2,7 +2,7 @@
             <div id="carrito" class="carrito container">
             <h1>Carrito</h1>
                 <?php if (isset($errores)): ?>
-                    <p class="errores"><?=$errores?></p>
+                    <p class="errores"><?= $errores ?></p>
                 <?php endif; ?>
                 <table>
                     <tr>

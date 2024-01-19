@@ -11,6 +11,7 @@ use Lib\Pages;
 use Services\PedidoService;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 // definir clase controladora
 class PedidoController {
@@ -26,10 +27,29 @@ class PedidoController {
 
     //Método para mostrar todos los pedidos
     public function mostrarPedido(){
-        if(isset($_SESSION['login']) && count($_SESSION['carrito']) >= 1){
+        if(!isset($_SESSION['login'])){
+            $this->pages->render('usuario/login' , ['errores' => 'No hay productos en el carrito']);
+        }
+        elseif(isset($_SESSION['login']) && count($_SESSION['carrito']) >= 1){
             $this->pages->render('pedido/crear');
         } elseif (isset($_SESSION['login']) && count($_SESSION['carrito']) == 0) {
             $this->pages->render('carrito/ver' , ['errores' => 'No hay productos en el carrito']);
+        }
+    }
+
+    public function todosLosPedidos(){
+        if (!isset($_SESSION['login'])) {
+            header('Location: ' . BASE_URL . 'usuario/login');
+        }
+        else {
+            $usuario = $_SESSION['login'];
+            if ($usuario->rol == 'admin') {
+                $pedidos = $this->pedidoService->getAll();
+                $this->pages->render('pedido/gestionarPedidos', ['pedidos' => $pedidos]);
+            }
+            else {
+                header('Location: ' . BASE_URL . 'usuario/login');
+            }
         }
     }
 
@@ -38,22 +58,32 @@ class PedidoController {
             header('Location: ' . BASE_URL . 'usuario/login');
         }
         else {
-            //Obtener el usuario logueado
             $usuario = $_SESSION['login'];
-            //Obtener los pedidos del usuario
             $pedidos = $this->pedidoService->getByUsuario($usuario->id);
-            //Mostrar la vista de mis pedidos
             $this->pages->render('pedido/misPedidos', ['pedidos' => $pedidos]);
         }
     }
 
-    //Método para agregar un pedido a la base de datos
+    public function validarPedido($provincia, $localidad, $direccion) {
+        $errores = [];
+        if (empty($provincia) || strlen($provincia) < 2) {
+            $errores['provincia'] = 'La provincia no puede estar vacía y debe tener al menos 2 caracteres';
+        }
+        if (empty($localidad) || strlen($localidad) < 2) {
+            $errores['localidad'] = 'La localidad no puede estar vacía y debe tener al menos 2 caracteres';
+        }
+        if (empty($direccion) || strlen($direccion) < 5) {
+            $errores['direccion'] = 'La dirección no puede estar vacía y debe tener al menos 5 caracteres';
+        }
+        return $errores;
+    }
+
     public function crear () {
-        //Si el usuario no está logueado, redirigir a la página de login
+
         if (!isset($_SESSION['login']) || $_SESSION['carrito'] == "") {
             header('Location: ' . BASE_URL . 'usuario/login');
         }
-        //Si el usuario está logueado, crear el pedido
+
         else {
             //Obtener los datos del formulario
             $provincia = isset($_POST['provincia']) ? $_POST['provincia'] : false;
@@ -64,6 +94,13 @@ class PedidoController {
             $fecha = Utils::getFecha();
             $hora = Utils::getHora();
 
+            //Validar los datos
+            $errores = $this->validarPedido($provincia, $localidad, $direccion);
+
+            if (!empty($errores)) {
+                $this->pages->render('pedido/crear', ['errores' => $errores]);
+            } else {
+            
             //Obtener el usuario logueado
             $usuario = $_SESSION['login'];
             //Obtener el carrito del usuario
@@ -76,6 +113,74 @@ class PedidoController {
             unset($_SESSION['carrito']);
             //Redirigir a la página de mis pedidos
             header('Location: ' . BASE_URL . 'pedido/misPedidos');
+            
+            }
+        }
+    }
+
+    public function eliminar($id){
+        $usuario = $_SESSION['login'];
+
+        if ($usuario->rol == 'admin') {
+            $this->pedidoService->delete($id);
+            header('Location: ' . BASE_URL . 'pedido/todosLosPedidos');
+        }
+    }
+
+    public function editar($id){
+        $pedidos = $this->pedidoService->getAll();
+        $this->pages->render('pedido/gestionarPedidos', ['pedidos' => $pedidos, 'id' => $id]);
+    }
+
+    public function validarPedidoActualizado($data) {
+        $errores = [];
+        // Validar coste
+        if (empty($data['coste']) || !is_numeric($data['coste'])) {
+            $errores['coste'] = 'El coste es requerido y debe ser un número';
+        }
+
+        // Validar estado
+        $estadosPermitidos = ['pendiente', 'confirmado'];
+        if (empty($data['estado']) || !in_array($data['estado'], $estadosPermitidos)) {
+            $errores['estado'] = 'El estado es requerido y debe ser "pendiente" o "confirmado"';
+        }
+
+        // Validar fecha
+        if (empty($data['fecha']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['fecha'])) {
+            $errores['fecha'] = 'La fecha es requerida y debe estar en el formato YYYY-MM-DD';
+        }
+
+        // Validar hora
+        if (empty($data['hora']) || !preg_match('/^\d{2}:\d{2}:\d{2}$/', $data['hora'])) {
+            $errores['hora'] = 'La hora es requerida y debe estar en el formato HH:MM:SS';
+        }
+
+        return $errores;
+    }
+
+    public function actualizar(){
+        $usuario = $_SESSION['login'];
+        $pedido = $_POST['data'];
+        $id = $pedido['id'];
+        $coste = $pedido['coste'];
+        $fecha = $pedido['fecha'];
+        $hora = $pedido['hora'];
+        $estado = $pedido['estado'];
+        $usuario_id = $pedido['usuario_id'];
+        
+        if ($usuario->rol == 'admin') {
+            $data = $_POST['data'];
+            $errores = $this->validarPedidoActualizado($data);
+    
+            if (!empty($errores)) {
+                // Hay errores, redirigir al formulario con los errores
+                $pedidos = $this->pedidoService->getAll();
+                $this->pages->render('pedido/gestionarPedidos', ['pedidos' => $pedidos ,'errores' => $errores]);
+            } else {
+                // No hay errores, actualizar el pedido en la base de datos
+                $this->pedidoService->editar($id, $coste, $fecha, $hora, $estado, $usuario_id);
+                $this->pages->render('pedido/gestionarPedidos');
+            }
         }
     }
 

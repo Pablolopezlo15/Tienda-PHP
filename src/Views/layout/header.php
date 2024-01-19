@@ -47,7 +47,7 @@
                                 <a href="<?=BASE_URL?>categoria/verTodos/">Gestionar Categorias</a>
                                 <a href="<?=BASE_URL?>categoria/crear/">Crear Categoria</a>
                                 <a href="<?=BASE_URL?>producto/crear/">Nuevo Producto</a>
-                                <a href="<?=BASE_URL?>pedido/verTodos/">Gestionar Pedidos</a>
+                                <a href="<?=BASE_URL?>pedido/todosLosPedidos/">Gestionar Pedidos</a>
                             <?php endif;?>
                         <?php endif;?>
                     </div>

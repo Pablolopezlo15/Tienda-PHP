@@ -80,12 +80,36 @@ class Routes {
             return (new PedidoController())->misPedidos();
         });
 
+        Router::add('GET', '/pedido/todosLosPedidos', function() {
+            return (new PedidoController())->todosLosPedidos();
+        });
+
+        Router::add('GET', '/pedido/crear', function() {
+            return (new PedidoController())->crear();
+        });
+
         Router::add('POST', '/pedido/crear', function() {
             return (new PedidoController())->crear();
         });
 
         Router::add('GET', '/pedido/confirmarPedido/?id=:id', function($id) {
             return (new PedidoController())->confirmarPedido($id);
+        });
+
+        Router::add('GET', '/pedido/eliminar/?id=:id', function($id) {
+            return (new PedidoController())->eliminar($id);
+        });
+
+        Router::add('GET', '/pedido/editar/?id=:id', function($id) {
+            return (new PedidoController())->editar($id);
+        });
+
+        Router::add('GET', '/pedido/actualizar', function() {
+            return (new PedidoController())->actualizar();
+        });
+
+        Router::add('POST', '/pedido/actualizar', function() {
+            return (new PedidoController())->actualizar();
         });
 
         Router::add('GET', '/usuario/login', function() {

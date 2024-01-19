@@ -16,13 +16,11 @@
         <li><table>
             <tr>
                 <th>Producto</th>
-                <!-- <th>Unidades</th> -->
                 <th>Precio</th>
             </tr>
             <?php foreach ($productos as $producto): ?>
             <tr>
                 <td><?= $producto['nombre'] ?></td>
-                <!-- <td><?= $producto['cantidad'] ?></td>                 -->
                 <td><?= $producto['precio'] ?>€</td>
             </tr>
             <?php endforeach; ?>

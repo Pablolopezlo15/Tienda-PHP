@@ -41,15 +41,32 @@ class PedidoRepository {
         return $pedidos;
     }
 
-
-    public function getByCategoria($categoriaId) {
-        $sql = "SELECT * FROM productos WHERE categoria_id = :categoriaId";
+    public function delete($id) {
+        $sql = "DELETE FROM lineas_pedidos WHERE pedido_id = :id";
         $stmt = $this->db->prepara($sql);
-        $stmt->bindParam(':categoriaId', $categoriaId, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        $sql = "DELETE FROM pedidos WHERE id = :id";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $delete = $stmt->execute();
         $this->db->close();
-        return $result;
+        return $delete;
+    }
+
+    public function editar($id, $fecha, $hora, $coste, $estado, $usuario_id) {
+        $sql = "UPDATE pedidos SET fecha = :fecha, hora = :hora ,coste = :coste, estado = :estado, usuario_id = :usuario_id WHERE id = :id";
+        $stmt = $this->db->prepara($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
+        $stmt->bindParam(':hora', $hora, PDO::PARAM_STR);
+        $stmt->bindParam(':coste', $coste, PDO::PARAM_STR);
+        $stmt->bindParam(':estado', $estado, PDO::PARAM_STR);
+        $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+        $update = $stmt->execute();
+        $this->db->close();
+        return $update;
     }
 
     public function getProductosPedido($pedidoId) {

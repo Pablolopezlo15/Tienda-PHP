@@ -21,6 +21,14 @@ class PedidoService {
         return $this->pedidoRepository->getByUsuario($usuarioId);
     }
 
+    public function delete($id) {
+        return $this->pedidoRepository->delete($id);
+    }
+
+    public function editar($id, $fecha, $hora, $coste, $estado, $usuario_id) {
+        return $this->pedidoRepository->editar($id, $fecha, $hora ,$coste, $estado, $usuario_id);
+    }
+
     public function save($usuarioId, $provincia, $localidad, $direccion, $coste, $estado, $fecha, $hora, $carrito) {
         return $this->pedidoRepository->save($usuarioId, $provincia, $localidad, $direccion, $coste, $estado, $fecha, $hora, $carrito);
     }
