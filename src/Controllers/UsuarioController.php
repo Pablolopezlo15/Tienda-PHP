@@ -11,20 +11,21 @@ class UsuarioController {
     private Pages $pages;
     private UsuarioService $usuarioService;
     private $errores = [];
-    /**
-     * @param Pages $pages
-     */
+
+    // Constructor de la clase UsuarioController
     public function __construct()
     {
         $this->pages = new Pages();
         $this->usuarioService = new UsuarioService(new UsuarioRepository());
     }
 
+    // Método para ver todos los usuarios
     public function verTodos(){
         $usuarios = $this->usuarioService->verTodos();
         $this->pages->render('/usuario/verTodos', ['usuarios' => $usuarios]);
     }
 
+    // Método para validar el formulario de usuario
     private function validarFormulario($data) {
         $nombre = filter_var($data['nombre'], FILTER_SANITIZE_STRING);
         $apellidos = filter_var($data['apellidos'], FILTER_SANITIZE_STRING);
@@ -62,6 +63,7 @@ class UsuarioController {
         }
     }
 
+    // Método para validar el inicio de sesión
     private function validarLogin($data) {
         $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
         $password = filter_var($data['password'], FILTER_SANITIZE_STRING);
@@ -87,6 +89,7 @@ class UsuarioController {
         }
     }
 
+    // Método para registrar un nuevo usuario
     public function registro(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){
@@ -116,6 +119,7 @@ class UsuarioController {
         $this->pages->render('/usuario/registro', ['errores' => $this->errores]);
     }
 
+    // Método para iniciar sesión
     public function login(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){
@@ -141,22 +145,26 @@ class UsuarioController {
         $this->pages->render('/usuario/login', ['errores' => $this->errores]);
     }
 
+    // Método para cerrar sesión
     public function logout(){
         Utils::deleteSession('login');
-                
+
         header("Location:".BASE_URL);
     }
 
+    // Método para eliminar un usuario
     public function eliminar($id){
         $this->usuarioService->delete($id);
         header("Location:".BASE_URL."usuario/verTodos");
     }
 
+    // Método para editar un usuario
     public function editar($id){
         $usuarios = $this->usuarioService->verTodos();
         $this->pages->render('/usuario/verTodos', ['usuarios' => $usuarios, 'id' => $id]);
     }
 
+    // Método para validar la edición de un usuario
     public function validarEditar($data){
         $id = filter_var($data['id'], FILTER_SANITIZE_STRING);
         $nombre = filter_var($data['nombre'], FILTER_SANITIZE_STRING);
@@ -166,7 +174,7 @@ class UsuarioController {
     
         $nombreRegex = "/^[a-zA-ZáéíóúÁÉÍÓÚ ]*$/";
         $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
-        $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/"; // Al menos una letra, un número y mínimo 8 caracteres
+        $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/"; 
     
     
         if (!preg_match($nombreRegex, $nombre)) {
@@ -192,6 +200,7 @@ class UsuarioController {
         }
     }
 
+    // Método para actualizar un usuario
     public function actualizar(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){

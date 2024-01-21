@@ -3,17 +3,62 @@
 namespace Models;
 use Lib\BaseDatos;
 
+/**
+ * Clase Producto
+ *
+ * Esta clase representa un producto en el sistema.
+ */
 class Producto{
+    /**
+     * @var int $id El ID del producto.
+     */
     private $id;
+
+    /**
+     * @var string $nombre El nombre del producto.
+     */
     private $nombre;
+
+    /**
+     * @var string $descripcion La descripción del producto.
+     */
     private $descripcion;
+
+    /**
+     * @var float $precio El precio del producto.
+     */
     private $precio;
+
+    /**
+     * @var int $categoria_id El ID de la categoría a la que pertenece el producto.
+     */
     private $categoria_id;
+
+    /**
+     * @var int $stock La cantidad de stock disponible del producto.
+     */
     private $stock;
+
+    /**
+     * @var string $oferta La oferta aplicada al producto.
+     */
     private $oferta;
+
+    /**
+     * @var string $imagen La imagen del producto.
+     */
     private $imagen;
+
+    /**
+     * @var BaseDatos $db La conexión a la base de datos.
+     */
     private $db;
 
+    /**
+     * Constructor de Producto.
+     *
+     * Inicializa una nueva instancia de la clase Producto.
+     */
     public function __construct($id = null, $nombre = null, $descripcion = null, $precio = null, $stock= null, $oferta = null, $categoria_id = null, $imagen = null){
         $this->id = $id;
         $this->nombre = $nombre;
@@ -25,6 +70,8 @@ class Producto{
         $this->imagen = $imagen;
         $this->db = new BaseDatos();
     }
+
+    // METODOS GETTER Y SETTER
 
     public function getId(){
         return $this->id;

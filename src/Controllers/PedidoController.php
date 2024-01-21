@@ -1,6 +1,5 @@
 <?php
 
-//Incluir el modelo de pedidos
 namespace Controllers;
 
 use Repositories\PedidoRepository;
@@ -13,19 +12,32 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// definir clase controladora
+/**
+ * Clase PedidoController
+ *
+ * Esta clase maneja la lógica para las acciones relacionadas con los pedidos.
+ */
 class PedidoController {
     private Pages $pages;
     private PedidoService $pedidoService;
     private ProductoService $productoService; 
 
+    /**
+     * Constructor de PedidoController.
+     *
+     * Inicializa una nueva instancia de la clase PedidoController.
+     */
     public function __construct() {
         $this->pages = new Pages();
         $this->pedidoService = new PedidoService(new PedidoRepository());
         $this->productoService = new ProductoService(new ProductoRepository());
     }
 
-    //Método para mostrar todos los pedidos
+    /**
+     * Obtiene todos los pedidos.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function mostrarPedido(){
         if(!isset($_SESSION['login'])){
             $this->pages->render('usuario/login' , ['errores' => 'No hay productos en el carrito']);
@@ -37,6 +49,11 @@ class PedidoController {
         }
     }
 
+    /**
+     * Obtiene todos los pedidos.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function todosLosPedidos(){
         if (!isset($_SESSION['login'])) {
             header('Location: ' . BASE_URL . 'usuario/login');
@@ -53,6 +70,11 @@ class PedidoController {
         }
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function misPedidos(){
         if (!isset($_SESSION['login'])) {
             header('Location: ' . BASE_URL . 'usuario/login');
@@ -64,6 +86,11 @@ class PedidoController {
         }
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function validarPedido($provincia, $localidad, $direccion) {
         $errores = [];
         if (empty($provincia) || strlen($provincia) < 2) {
@@ -78,6 +105,11 @@ class PedidoController {
         return $errores;
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function crear () {
 
         if (!isset($_SESSION['login']) || $_SESSION['carrito'] == "") {
@@ -85,7 +117,6 @@ class PedidoController {
         }
 
         else {
-            //Obtener los datos del formulario
             $provincia = isset($_POST['provincia']) ? $_POST['provincia'] : false;
             $localidad = isset($_POST['localidad']) ? $_POST['localidad'] : false;
             $direccion = isset($_POST['direccion']) ? $_POST['direccion'] : false;
@@ -94,30 +125,28 @@ class PedidoController {
             $fecha = Utils::getFecha();
             $hora = Utils::getHora();
 
-            //Validar los datos
             $errores = $this->validarPedido($provincia, $localidad, $direccion);
 
             if (!empty($errores)) {
                 $this->pages->render('pedido/crear', ['errores' => $errores]);
             } else {
             
-            //Obtener el usuario logueado
             $usuario = $_SESSION['login'];
-            //Obtener el carrito del usuario
             $carrito = $_SESSION['carrito'];
-            //Obtener el total del carrito
             $total = $this->pedidoService->getTotalCarrito($carrito);
-            //Crear el pedido
             $pedido = $this->pedidoService->save($usuario->id, $provincia, $localidad, $direccion, $total, $estado, $fecha, $hora, $carrito);
-            //Vaciar el carrito
             unset($_SESSION['carrito']);
-            //Redirigir a la página de mis pedidos
             header('Location: ' . BASE_URL . 'pedido/misPedidos');
             
             }
         }
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function eliminar($id){
         $usuario = $_SESSION['login'];
 
@@ -127,30 +156,36 @@ class PedidoController {
         }
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function editar($id){
         $pedidos = $this->pedidoService->getAll();
         $this->pages->render('pedido/gestionarPedidos', ['pedidos' => $pedidos, 'id' => $id]);
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function validarPedidoActualizado($data) {
         $errores = [];
-        // Validar coste
         if (empty($data['coste']) || !is_numeric($data['coste'])) {
             $errores['coste'] = 'El coste es requerido y debe ser un número';
         }
 
-        // Validar estado
         $estadosPermitidos = ['pendiente', 'confirmado'];
         if (empty($data['estado']) || !in_array($data['estado'], $estadosPermitidos)) {
             $errores['estado'] = 'El estado es requerido y debe ser "pendiente" o "confirmado"';
         }
 
-        // Validar fecha
         if (empty($data['fecha']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['fecha'])) {
             $errores['fecha'] = 'La fecha es requerida y debe estar en el formato YYYY-MM-DD';
         }
 
-        // Validar hora
         if (empty($data['hora']) || !preg_match('/^\d{2}:\d{2}:\d{2}$/', $data['hora'])) {
             $errores['hora'] = 'La hora es requerida y debe estar en el formato HH:MM:SS';
         }
@@ -158,6 +193,11 @@ class PedidoController {
         return $errores;
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function actualizar(){
         $usuario = $_SESSION['login'];
         $pedido = $_POST['data'];
@@ -173,22 +213,23 @@ class PedidoController {
             $errores = $this->validarPedidoActualizado($data);
     
             if (!empty($errores)) {
-                // Hay errores, redirigir al formulario con los errores
                 $pedidos = $this->pedidoService->getAll();
                 $this->pages->render('pedido/gestionarPedidos', ['pedidos' => $pedidos ,'errores' => $errores]);
             } else {
-                // No hay errores, actualizar el pedido en la base de datos
                 $this->pedidoService->editar($id, $coste, $fecha, $hora, $estado, $usuario_id);
                 $this->pages->render('pedido/gestionarPedidos');
             }
         }
     }
 
+    /**
+     * Obtiene todos los pedidos de un usuario.
+     *
+     * @return array Los pedidos obtenidos.
+     */
     public function confirmarPedido($id) {
-        //Obtener el usuario logueado
         $usuario = $_SESSION['login'];
 
-        //Si el usuario es admin, actualizar el estado del pedido
         if ($usuario->rol == 'admin') {
             $this->pedidoService->confirmarPedido($id);
             $this->enviarEmail($id);
@@ -197,7 +238,7 @@ class PedidoController {
     }
 
 
-        /**
+    /**
      * Envia un correo electrónico al cliente.
      * @return void
      */
