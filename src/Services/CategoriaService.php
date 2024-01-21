@@ -21,4 +21,16 @@ class CategoriaService {
         return $this->categoriaRepository->save($nombre);
     }
 
+    public function delete($id) {
+        return $this->categoriaRepository->delete($id);
+    }
+
+    public function editar($id, $nombre) {
+        return $this->categoriaRepository->update($id, $nombre);
+    }
+
+    public function update($id, $nombre) {
+        return $this->categoriaRepository->update($id, $nombre);
+    }
+
 }

@@ -48,17 +48,7 @@
                 </td>
             </tr>
             <?php endif;?>
-            <!-- <tr>
-                <td><input type="text" value="<?= $usuario['id'] ?>"></td>
-                <td><?= $usuario['nombre'] ?></td>
-                <td><?= $usuario['apellidos'] ?></td>
-                <td><?= $usuario['email'] ?></td>
-                <td><?= $usuario['rol'] ?></td>
-                <td>
-                    <a href="<?=BASE_URL?>usuario/editar/?id=<?=$usuario['id']?>"><i class="ri-edit-line"></i></a>
-                    <a href="<?=BASE_URL?>usuario/eliminar/?id=<?=$usuario['id']?>"><i class="ri-delete-bin-2-line"></i></a>
-                </td>
-            </tr> -->
+
         <?php endforeach; ?>
     </table>
     <?php else: ?>

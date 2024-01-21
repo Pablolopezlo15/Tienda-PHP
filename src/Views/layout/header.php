@@ -44,15 +44,13 @@
                         <?php if (isset($_SESSION['login']) && is_object($_SESSION['login'])):?>
                             <?php if ($_SESSION['login']->rol == 'admin'):?>
                                 <a href="<?=BASE_URL?>usuario/verTodos/">Gestionar Usuarios</a>
-                                <a href="<?=BASE_URL?>categoria/verTodos/">Gestionar Categorias</a>
-                                <a href="<?=BASE_URL?>categoria/crear/">Crear Categoria</a>
-                                <a href="<?=BASE_URL?>producto/crear/">Nuevo Producto</a>
+                                <a href="<?=BASE_URL?>categoria/gestionarCategorias/">Gestionar Categorias</a>
+                                <a href="<?=BASE_URL?>producto/gestionarProductos/">Gestionar Productos</a>
                                 <a href="<?=BASE_URL?>pedido/todosLosPedidos/">Gestionar Pedidos</a>
                             <?php endif;?>
                         <?php endif;?>
                     </div>
                     <div class="logo">
-                        <!-- <a href="#" @click="mostrarLandingPage()"><img src="src/img/logo/pllogo.png" alt=""></a> -->
                     </div>
                     <div class="menu-items" id="categoria">
                         <li><a href="<?= BASE_URL ?>">Home</a></li>

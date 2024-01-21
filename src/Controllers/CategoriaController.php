@@ -31,6 +31,11 @@ class CategoriaController{
         $this->pages->render('categoria/ver', ['productos' => $productos]);
     }
 
+    public function gestionarCategorias() {
+        $categorias = $this->categoriaService->getAll();
+        $this->pages->render('categoria/gestionarCategorias', ['categorias' => $categorias]);
+    }
+
     public function crear() {
         if (isset($_POST['nombre'])) {
             $categoria = new Categoria();
@@ -43,4 +48,27 @@ class CategoriaController{
             $this->pages->render('categoria/crear');
         }
     }
+
+    public function borrar($id) {
+        $this->categoriaService->delete($id);
+        $this->gestionarCategorias();
+    }
+
+    public function editar($id) {
+        $categoria = $this->categoriaService->getById($id);
+        $this->pages->render('categoria/gestionarCategorias', ['categoria' => $categoria]);
+
+    }
+
+    public function actualizar() {
+        if (isset($_POST['data'])) {
+            $data = $_POST['data'];
+            $id = $data['id'];
+            $nombre = $data['nombre'];
+            $this->categoriaService->update($id, $nombre);
+
+            $this->gestionarCategorias();
+        } 
+    }
+
 }

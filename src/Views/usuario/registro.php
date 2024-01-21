@@ -37,8 +37,9 @@
         <label for="password">Contraseña</label>
         <input type="password" name="data[password]" id="password" required>
 
+        <?php if(!isset($_SESSION['login'])): ?>
         <p>Ya tengo una cuenta <a href="<?=BASE_URL?>usuario/login">Inicia Sesión aquí</a></p>
-            
+        <?php endif;?>
         <input type="submit" value="Registrarse" required>
     </form>
 </section>

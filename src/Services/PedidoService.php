@@ -37,10 +37,6 @@ class PedidoService {
         return $this->pedidoRepository->getProductosPedido($pedidoId);
     }
 
-    // public function saveLinea($pedidoId, $productoId, $unidades) {
-    //     return $this->pedidoRepository->saveLinea($pedidoId, $productoId, $unidades);
-    // }
-
     public function getTotalCarrito($carrito) {
         return $this->pedidoRepository->calcularTotal($carrito);
     }
@@ -53,9 +49,5 @@ class PedidoService {
         $pedidoRepository = new PedidoRepository();
         return $pedidoRepository->confirmarPedido($pedidoId);
     }
-
-    // public function confirmarPedido($id) {
-    //     return $this->pedidoRepository->confirmarPedido($id);
-    // }
 
 }

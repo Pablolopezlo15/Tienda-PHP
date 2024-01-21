@@ -53,6 +53,42 @@ class CategoriaRepository {
         return $result;
     }
 
-    
+    public function delete($id): bool{
+        try {
+            $del = $this->db->prepara("DELETE FROM categorias WHERE id = :id");
+            $del->bindValue(':id', $id);
+
+            $del->execute();
+
+            $result = true;
+        } catch (PDOException $error){
+            $result = false;
+        }
+
+        $del->closeCursor();
+        $del=null;
+
+        return $result;
+    }
+
+    public function update($id, $nombre): bool{
+
+        try {
+            $upd = $this->db->prepara("UPDATE categorias SET nombre = :nombre WHERE id = :id");
+            $upd->bindValue(':id', $id);
+            $upd->bindValue(':nombre', $nombre);
+
+            $upd->execute();
+
+            $result = true;
+        } catch (PDOException $error){
+            $result = false;
+        }
+
+        $upd->closeCursor();
+        $upd=null;
+
+        return $result;
+    }
 
 }

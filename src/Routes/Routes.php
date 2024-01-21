@@ -28,6 +28,22 @@ class Routes {
             return (new CategoriaController())->crear();
         });
 
+        Router::add('GET', '/categoria/borrar/?id=:id', function($id) {
+            return (new CategoriaController())->borrar($id);
+        });
+
+        Router::add('GET', '/categoria/editar/?id=:id', function($id) {
+            return (new CategoriaController())->editar($id);
+        });
+
+        Router::add('POST', '/categoria/actualizar', function() {
+            return (new CategoriaController())->actualizar();
+        });
+
+        Router::add('GET', '/categoria/gestionarCategorias', function() {
+            return (new CategoriaController())->gestionarCategorias();
+        });
+
         Router::add('GET', '/producto/verDetalles/?id=:id', function($id) {
             return (new ProductoController())->verDetalles($id);
         });
@@ -46,6 +62,10 @@ class Routes {
 
         Router::add('POST', '/producto/editar', function() {
             return (new ProductoController())->editar();
+        });
+
+        Router::add('GET', '/producto/gestionarProductos', function() {
+            return (new ProductoController())->gestionarProductos();
         });
 
         Router::add('GET', '/carrito/agregarProducto/?id=:id', function($id) {

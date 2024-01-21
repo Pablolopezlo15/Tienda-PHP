@@ -4,19 +4,30 @@ namespace Controllers;
 use Lib\Pages;
 use Services\ProductoService;
 use Repositories\ProductoRepository;
+use Services\PedidoService;
+use Repositories\PedidoRepository;
 
 class ProductoController{
     private Pages $pages;
     private ProductoService $productoService;
+    private PedidoService $pedidoService;
 
     public function __construct() {
         $this->pages = new Pages();
         $this->productoService = new ProductoService(new ProductoRepository());
+        $this->pedidoService = new PedidoService(new PedidoRepository());
     }
 
     public function getRandom() {
         $productos = $this->productoService->getRandom();
         return $productos;
+    }
+
+    public function gestionarProductos() {
+        // Llamar al servicio para obtener todos los productos
+        $productos = $this->productoService->getAll();
+        // Mostrar la vista con todos los productos
+        $this->pages->render('producto/gestionarProductos', ['productos' => $productos]);
     }
     
     public function crear() {
@@ -48,9 +59,12 @@ class ProductoController{
     public function borrar($id) {
         // Llamar al servicio para eliminar el producto
         $this->productoService->delete($id);
+
         // Redirigir o hacer lo que necesites después de eliminar el producto
         header('Location: ' . BASE_URL);
     }
+
+
 
     public function editar() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {

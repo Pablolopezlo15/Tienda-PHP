@@ -32,24 +32,24 @@ class UsuarioController {
         $password = filter_var($data['password'], FILTER_SANITIZE_STRING);
     
         // Validación de regex
-        $nombreRegex = "/^[a-zA-Z ]*$/";
+        $nombreRegex = "/^[a-zA-ZáéíóúÁÉÍÓÚ ]*$/";
         $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
         $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/"; // Al menos una letra, un número y mínimo 8 caracteres
     
     
-        if (!preg_match($nombreRegex, $nombre)) {
+        if (empty($nombre) || !preg_match($nombreRegex, $nombre)) {
             $this->errores[] = 'El nombre solo debe contener letras y espacios.';
         }
-        if (!preg_match($nombreRegex, $apellidos)) {
+        if (empty($apellidos) || !preg_match($nombreRegex, $apellidos)) {
             $this->errores[] = 'Los apellidos solo deben contener letras y espacios.';
         }
-        if (!preg_match($emailRegex, $email)) {
+        if (empty($email) || !preg_match($emailRegex, $email)) {
             $this->errores[] = 'El correo electrónico no es válido.';
         }
-        if (!preg_match($passwordRegex, $password)) {
+        if (empty($password) || !preg_match($passwordRegex, $password)) {
             $this->errores[] = 'La contraseña debe tener al menos una letra, un número y un mínimo de 8 caracteres.';
         }
-    
+
         if (empty($this->errores)) {
             return [
                 'nombre' => $nombre,
@@ -90,21 +90,26 @@ class UsuarioController {
     public function registro(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){
-                $registrado = false;
                 $registrado = $this->validarFormulario($_POST['data']);
-    
-                if ($registrado !== false) {
-                    $usuario = Usuario::fromArray($registrado);
-                    $save = $this->usuarioService->create($usuario);
-                    if ($save){
-                        $_SESSION['register'] = "complete";
+
+                if ($registrado != ""){
+                    if (is_array($registrado)) {
+                        $usuario = Usuario::fromArray($registrado);
+                        $save = $this->usuarioService->create($usuario);
+                        $registrado = "";
+                        if ($save){
+                            $_SESSION['register'] = "complete";
+                        } else {
+                            $_SESSION['register'] = "failed";
+                        }
                     } else {
                         $_SESSION['register'] = "failed";
                     }
-                } else {
+                }
+                else {
                     $_SESSION['register'] = "failed";
                 }
-                $usuario->desconecta();
+    
             }
         }
     
@@ -138,8 +143,7 @@ class UsuarioController {
 
     public function logout(){
         Utils::deleteSession('login');
-        // Utils::deleteSession('carrito');
-        
+                
         header("Location:".BASE_URL);
     }
 
@@ -160,8 +164,7 @@ class UsuarioController {
         $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
         $rol = filter_var($data['rol'], FILTER_SANITIZE_STRING);
     
-        // Validación de regex
-        $nombreRegex = "/^[a-zA-Z ]*$/";
+        $nombreRegex = "/^[a-zA-ZáéíóúÁÉÍÓÚ ]*$/";
         $emailRegex = "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
         $passwordRegex = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/"; // Al menos una letra, un número y mínimo 8 caracteres
     
@@ -176,7 +179,6 @@ class UsuarioController {
             $this->errores[] = 'El correo electrónico no es válido.';
         }
 
-    
         if (empty($this->errores)) {
             return [
                 'id' => $id,
@@ -193,11 +195,11 @@ class UsuarioController {
     public function actualizar(){
         if (($_SERVER['REQUEST_METHOD']) === 'POST'){
             if ($_POST['data']){
-                $registrado = false;
                 $registrado = $this->validarEditar($_POST['data']);
-    
-                if ($registrado !== false) {
+
+                if ($registrado != "") {
                     $usuario = Usuario::fromArray($registrado);
+
                     $save = $this->usuarioService->update($usuario);
                     if ($save){
                         $_SESSION['register'] = "complete";
@@ -210,7 +212,6 @@ class UsuarioController {
                 $usuario->desconecta();
             }
         }
-        // $this->pages->render('/usuario/registro', ['errores' => $this->errores]);
         header("Location:".BASE_URL."usuario/verTodos");
     }
 }
